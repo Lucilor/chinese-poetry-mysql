@@ -1,0 +1,79 @@
+{
+	"mysql": {
+		"host": "127.0.0.1",
+		"user": "root",
+		"password": "123456",
+		"port": "3306",
+		"database": "test",
+		"tableName": "chinese_poetry"
+	},
+	"source": "F:/Lucilor/chinese-poetry",
+	"files": {
+		"data": [
+			{
+				"folder": "/json",
+				"pattern": "poet.tang.[0-9]*.json",
+				"dynasty": "唐",
+				"collection": "唐詩"
+			},
+			{
+				"folder": "/json",
+				"pattern": "poet.song.[0-9]*.json",
+				"dynasty": "宋",
+				"collection": "宋詩"
+			},
+			{
+				"folder": "/ci",
+				"pattern": "ci.song.[0-9]*.json",
+				"dynasty": "宋",
+				"collection": "宋詞"
+			},
+			{
+				"folder": "/wudai/huajianji",
+				"pattern": "huajianji-[0-9|x]*-juan.json",
+				"dynasty": "五代十國",
+				"collection": "花間集"
+			},
+			{
+				"folder": "/wudai/nantang",
+				"pattern": "poetrys.json",
+				"dynasty": "五代十國",
+				"collection": "南唐二主詞"
+			},
+			{
+				"folder": "/wudai/nantang",
+				"pattern": "poetrys.json",
+				"dynasty": "元",
+				"collection": "元曲"
+			},
+			{
+				"folder": "/shijing",
+				"pattern": "shijing.json",
+				"dynasty": "西周初~春秋中",
+				"collection": "詩經"
+			},
+			{
+				"folder": "/sishuwujing",
+				"pattern": "daxue|mengzi|zhongyong.json",
+				"dynasty": "",
+				"collection": "四書五經"
+			},
+			{
+				"folder": "/lunyu",
+				"pattern": "lunyu.json",
+				"dynasty": "戰國",
+				"collection": "論語",
+				"author": "佚名"
+			},
+			{
+				"folder": "/youmengying",
+				"pattern": "youmengying.json",
+				"dynasty": "清",
+				"collection": "幽夢影",
+				"author": "张潮"
+			}
+		],
+		"include": [],
+		"exclude": []
+	}
+}
