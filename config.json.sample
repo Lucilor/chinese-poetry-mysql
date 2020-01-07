@@ -4,10 +4,10 @@
 		"user": "root",
 		"password": "123456",
 		"port": "3306",
-		"database": "test",
-		"tableName": "chinese_poetry"
+		"database": "test"
 	},
-	"source": "F:/Lucilor/chinese-poetry",
+	"table": "chinese_poetry",
+	"source": "/opt/chinese-poetry",
 	"files": {
 		"data": [
 			{
@@ -31,25 +31,25 @@
 			{
 				"folder": "/wudai/huajianji",
 				"pattern": "huajianji-[0-9|x]*-juan.json",
-				"dynasty": "五代十國",
+				"dynasty": "唐",
 				"collection": "花間集"
 			},
 			{
 				"folder": "/wudai/nantang",
 				"pattern": "poetrys.json",
-				"dynasty": "五代十國",
+				"dynasty": "唐",
 				"collection": "南唐二主詞"
 			},
 			{
-				"folder": "/wudai/nantang",
-				"pattern": "poetrys.json",
+				"folder": "/yuanqu",
+				"pattern": "yuanqu.json",
 				"dynasty": "元",
 				"collection": "元曲"
 			},
 			{
 				"folder": "/shijing",
 				"pattern": "shijing.json",
-				"dynasty": "西周初~春秋中",
+				"dynasty": "",
 				"collection": "詩經"
 			},
 			{
