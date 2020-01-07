@@ -14,39 +14,45 @@ def importData(connect: mysql.connector.MySQLConnection, source: str, table: str
     begin = msg('正在處理  '+collection)
     cursor = connect.cursor()
     count = 0
-    for name in names:
-        match = re.match(re.compile(pattern), name)
-        if match is not None:
-            msg('正在處理文件  '+name)
-            file = open(source+'/'+name, 'r', encoding='utf-8')
-            data = json.loads(file.read())
-            if type(data).__name__ != 'list':
-                data = [data]
-            for poet in data:
-                if poet.get('author'):
-                    author = poet['author']
-                sql = 'INSERT INTO {} VALUES (null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'.format(table)
-                cursor.execute(sql, (
-                    author,
-                    dynasty,
-                    poet.get('title'),
-                    poet.get('rhythmic'),
-                    poet.get('chapter'),
-                    json.dumps(poet.get('paragraphs'), ensure_ascii=False),
-                    json.dumps(poet.get('notes'), ensure_ascii=False),
-                    collection,
-                    poet.get('section'),
-                    json.dumps(poet.get('content'), ensure_ascii=False),
-                    json.dumps(poet.get('comment'), ensure_ascii=False),
-                    json.dumps(poet.get('tags'), ensure_ascii=False)
-                ))
-                count += 1
-            # break
+    try:
+        for name in names:
+            match = re.match(re.compile(pattern), name)
+            if match is not None:
+                msg('正在處理文件  '+name)
+                file = open(source+'/'+name, 'r', encoding='utf-8')
+                data = json.loads(file.read())
+                if type(data).__name__ != 'list':
+                    data = [data]
+                for poet in data:
+                    if poet.get('author'):
+                        author = poet['author']
+                    sql = 'INSERT INTO {} VALUES (null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'.format(
+                        table)
+                    cursor.execute(sql, (
+                        author,
+                        dynasty,
+                        poet.get('title'),
+                        poet.get('rhythmic'),
+                        poet.get('chapter'),
+                        json.dumps(poet.get('paragraphs'), ensure_ascii=False),
+                        json.dumps(poet.get('notes'), ensure_ascii=False),
+                        collection,
+                        poet.get('section'),
+                        json.dumps(poet.get('content'), ensure_ascii=False),
+                        json.dumps(poet.get('comment'), ensure_ascii=False),
+                        json.dumps(poet.get('tags'), ensure_ascii=False)
+                    ))
+                    count += 1
+                # break
         connect.commit()
-    cursor.close()
-    end = msg(collection+'  處理完畢')
-    msg()
-    return {'count': count, 'time': getTimeString(begin, end)}
+        end = msg(collection+'  處理完畢')
+    except Exception:
+        end = msg(collection+'  處理出错')
+        count = None
+    finally:
+        cursor.close()
+        msg()
+        return {'count': count, 'time': getTimeString(begin, end)}
 
 
 # 控制台输出信息

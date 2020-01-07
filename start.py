@@ -42,7 +42,7 @@ def start():
     # 循环处理json文件
     arr = []
     l = 0
-    count = 0
+    total = 0
     for d in data:
         if len(include) and d['collection'] not in include:
             continue
@@ -51,17 +51,23 @@ def start():
         res = importData(connect, source, table, d['folder'],
                          d['pattern'], d['dynasty'], d['collection'])
         l = max(l, len(d['collection']))
-        arr.append({'collection': d['collection'], 'time': res['time']})
-        count += res['count']
+        if res['count'] is None:
+            arr.append({'collection': d['collection'],
+                        'time': res['time'], 'count': '失敗'})
+        else:
+            arr.append(
+                {'collection': d['collection'], 'time': res['time'], 'count': res['count']})
+            total += res['count']
     cursor.close()
     connect.close()
 
     # 最后输出统计信息
-    end = msg('所有文件處理完畢, 記錄總數: '+str(count))
+    end = msg('所有文件處理完畢, 記錄總數: '+str(total))
     msg()
     for v in arr:
-        msg('{}  用時  {}'.format(v['collection'].ljust(
-            l+l-len(v['collection'])), v['time']))
+        count = v['count']
+        msg('{}  用時  {}  {}'.format(v['collection'].ljust(
+            l+l-len(v['collection'])), v['time'], v['count']))
     msg('共計用時  '+getTimeString(begin, end))
     msg()
 
