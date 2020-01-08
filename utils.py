@@ -31,16 +31,16 @@ def importData(connect: mysql.connector.MySQLConnection, source: str, table: str
                     cursor.execute(sql, (
                         author,
                         dynasty,
-                        poet.get('title'),
-                        poet.get('rhythmic'),
-                        poet.get('chapter'),
-                        json.dumps(poet.get('paragraphs'), ensure_ascii=False),
-                        json.dumps(poet.get('notes'), ensure_ascii=False),
+                        poet.get('title') or '',
+                        poet.get('rhythmic') or '',
+                        poet.get('chapter') or '',
+                        json.dumps(poet.get('paragraphs'), ensure_ascii=False) or '',
+                        json.dumps(poet.get('notes'), ensure_ascii=False) or '',
                         collection,
-                        poet.get('section'),
-                        json.dumps(poet.get('content'), ensure_ascii=False),
-                        json.dumps(poet.get('comment'), ensure_ascii=False),
-                        json.dumps(poet.get('tags'), ensure_ascii=False)
+                        poet.get('section') or '',
+                        json.dumps(poet.get('content'), ensure_ascii=False) or '',
+                        json.dumps(poet.get('comment'), ensure_ascii=False) or '',
+                        json.dumps(poet.get('tags'), ensure_ascii=False) or ''
                     ))
                     count += 1
                 # break
