@@ -71,6 +71,13 @@
 				"dynasty": "清",
 				"collection": "幽夢影",
 				"author": "张潮"
+			},
+			{
+				"folder": "/mengxue",
+				"pattern": ".*.json",
+				"dynasty": "",
+				"collection": "蒙學",
+				"author": ""
 			}
 		],
 		"include": [],
