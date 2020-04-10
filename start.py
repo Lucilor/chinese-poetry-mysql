@@ -65,7 +65,6 @@ def start():
     end = msg('所有文件處理完畢, 記錄總數: '+str(total))
     msg()
     for v in arr:
-        count = v['count']
         msg('{}  用時  {}  {}'.format(v['collection'].ljust(
             l+l-len(v['collection'])), v['time'], v['count']))
     msg('共計用時  '+getTimeString(begin, end))

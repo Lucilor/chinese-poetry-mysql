@@ -28,25 +28,46 @@ def importData(connect: mysql.connector.MySQLConnection, source: str, table: str
                         author = poet['author']
                     sql = 'INSERT INTO {} VALUES (null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'.format(
                         table)
+                    if poet.get('paragraphs'):
+                        paragraphs = json.dumps(poet.get('paragraphs'), ensure_ascii=False)
+                    else:
+                        paragraphs = ''
+                    if poet.get('notes'):
+                        notes = json.dumps(poet.get('notes'), ensure_ascii=False)
+                    else:
+                        notes = ''
+                    if poet.get('content'):
+                        content = json.dumps(poet.get('content'), ensure_ascii=False)
+                    else:
+                        content = ''
+                    if poet.get('comment'):
+                        comment = json.dumps(poet.get('comment'), ensure_ascii=False)
+                    else:
+                        comment = ''
+                    if poet.get('tags'):
+                        tags = json.dumps(poet.get('tags'), ensure_ascii=False)
+                    else:
+                        tags = ''
                     cursor.execute(sql, (
                         author,
                         dynasty,
                         poet.get('title') or '',
                         poet.get('rhythmic') or '',
                         poet.get('chapter') or '',
-                        json.dumps(poet.get('paragraphs'), ensure_ascii=False) or '',
-                        json.dumps(poet.get('notes'), ensure_ascii=False) or '',
+                        paragraphs,
+                        notes,
                         collection,
                         poet.get('section') or '',
-                        json.dumps(poet.get('content'), ensure_ascii=False) or '',
-                        json.dumps(poet.get('comment'), ensure_ascii=False) or '',
-                        json.dumps(poet.get('tags'), ensure_ascii=False) or ''
+                        content,
+                        comment,
+                        tags
                     ))
                     count += 1
                 # break
         connect.commit()
         end = msg(collection+'  處理完畢')
-    except Exception:
+    except Exception as e:
+        msg(e)
         end = msg(collection+'  處理出错')
         count = None
     finally:
