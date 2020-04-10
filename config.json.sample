@@ -7,80 +7,71 @@
 		"database": "test"
 	},
 	"table": "chinese_poetry",
+	"tableAuthor": "chinese_poetry_author",
 	"source": "/opt/chinese-poetry",
 	"files": {
 		"data": [
 			{
-				"folder": "/json",
-				"pattern": "poet.tang.[0-9]*.json",
+				"path": "json/poet.tang.*.json",
 				"dynasty": "唐",
 				"collection": "唐詩"
 			},
 			{
-				"folder": "/json",
-				"pattern": "poet.song.[0-9]*.json",
+				"path": "json/poet.song.*.json",
 				"dynasty": "宋",
 				"collection": "宋詩"
 			},
 			{
-				"folder": "/ci",
-				"pattern": "ci.song.[0-9]*.json",
+				"path": "ci/ci.song.*.json",
 				"dynasty": "宋",
 				"collection": "宋詞"
 			},
 			{
-				"folder": "/wudai/huajianji",
-				"pattern": "huajianji-[0-9|x]*-juan.json",
+				"path": "wudai/huajianji/huajianji-*-juan.json",
 				"dynasty": "唐",
 				"collection": "花間集"
 			},
 			{
-				"folder": "/wudai/nantang",
-				"pattern": "poetrys.json",
+				"path": "wudai/nantang/poetrys.json",
 				"dynasty": "唐",
 				"collection": "南唐二主詞"
 			},
 			{
-				"folder": "/yuanqu",
-				"pattern": "yuanqu.json",
+				"path": "yuanqu/yuanqu.json",
 				"dynasty": "元",
 				"collection": "元曲"
 			},
 			{
-				"folder": "/shijing",
-				"pattern": "shijing.json",
+				"path": "shijing/shijing.json",
 				"dynasty": "",
 				"collection": "詩經"
 			},
 			{
-				"folder": "/sishuwujing",
-				"pattern": "daxue|mengzi|zhongyong.json",
+				"path": "sishuwujing/*.json",
 				"dynasty": "",
 				"collection": "四書五經"
 			},
 			{
-				"folder": "/lunyu",
-				"pattern": "lunyu.json",
+				"path": "lunyu/lunyu.json",
 				"dynasty": "戰國",
 				"collection": "論語",
-				"author": "佚名"
+				"author": ""
 			},
 			{
-				"folder": "/youmengying",
-				"pattern": "youmengying.json",
+				"path": "youmengying/youmengying.json",
 				"dynasty": "清",
 				"collection": "幽夢影",
 				"author": "张潮"
 			},
 			{
-				"folder": "/mengxue",
-				"pattern": ".*.json",
+				"path": "mengxue/*.json",
 				"dynasty": "",
 				"collection": "蒙學",
 				"author": ""
 			}
 		],
 		"include": [],
-		"exclude": []
+		"exclude": [],
+		"authors": ["ci/author.song.json", "json/authors.*.json", "wudai/nantang/authors.json"]
 	}
 }
