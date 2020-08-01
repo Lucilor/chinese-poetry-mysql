@@ -4,7 +4,7 @@
 
 python 3
 
-python 依赖: mysql-connector-python
+安装python 依赖: `pip install -r requirements.txt`
 
 ## config.json 说明
 
@@ -41,7 +41,3 @@ python 依赖: mysql-connector-python
 > 2. 将 `config.json.sample` 另存为 `config.json` 并配置好相关参数
 
 > 3. 运行 `start.py`
-
-## FAQ
-
-> 暂无
