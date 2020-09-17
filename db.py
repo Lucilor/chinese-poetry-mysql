@@ -2,10 +2,27 @@ import os
 from mysql.connector import MySQLConnection
 import json
 from glob import glob
+
+from mysql.connector.cursor import MySQLCursor
 from console import console
 from colorama import Fore
 from typing import Sequence
 import traceback
+
+fields = {
+    "author": {"type": "string"},
+    "dynasty": {"type": "string"},
+    "title": {"type": "string"},
+    "rhythmic": {"type": "string"},
+    "chapter": {"type": "string"},
+    "paragraphs": {"type": "json"},
+    "notes": {"type": "json"},
+    "collection": {"type": "string"},
+    "section": {"type": "string"},
+    "content": {"type": "json"},
+    "comment": {"type": "json"},
+    "tags": {"type": "json"},
+}
 
 # 将json文件录入mysql数据库
 def importData(
@@ -20,7 +37,7 @@ def importData(
     names = tuple(glob(f"{source}/{path}"))
     console.log()
     begin = console.info(f"正在處理  {collection}")
-    cursor = connect.cursor()
+    cursor: MySQLCursor = connect.cursor()
     success = 0
     error = 0
     for name in names:
@@ -30,49 +47,27 @@ def importData(
             name = os.path.normpath(name)
             file = open(name, "r", encoding="utf-8")
             data = json.loads(file.read())
+            if filename == "tangshisanbaishou.json":
+                data = shisanbai(data)
             if type(data).__name__ != "list":
                 data = [data]
             for poet in data:
-                if poet.get("author"):
-                    author = poet["author"]
-                sql = f"INSERT INTO `{table}` VALUES (null,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"
-                if poet.get("paragraphs"):
-                    paragraphs = json.dumps(poet.get("paragraphs"), ensure_ascii=False)
-                else:
-                    paragraphs = ""
-                if poet.get("notes"):
-                    notes = json.dumps(poet.get("notes"), ensure_ascii=False)
-                else:
-                    notes = ""
-                if poet.get("content"):
-                    content = json.dumps(poet.get("content"), ensure_ascii=False)
-                else:
-                    content = ""
-                if poet.get("comment"):
-                    comment = json.dumps(poet.get("comment"), ensure_ascii=False)
-                else:
-                    comment = ""
-                if poet.get("tags"):
-                    tags = json.dumps(poet.get("tags"), ensure_ascii=False)
-                else:
-                    tags = ""
-                cursor.execute(
-                    sql,
-                    (
-                        author,
-                        dynasty,
-                        poet.get("title") or "",
-                        poet.get("rhythmic") or "",
-                        poet.get("chapter") or "",
-                        paragraphs,
-                        notes,
-                        collection,
-                        poet.get("section") or "",
-                        content,
-                        comment,
-                        tags,
-                    ),
-                )
+                values = []
+                for field in fields:
+                    if fields[field]["type"] == "string":
+                        value = poet.get(field, "")
+                        if field == "collection":
+                            value = collection
+                        elif field == "dynasty":
+                            value = dynasty
+                        elif field == "author" and author:
+                            value = author
+                        values.append(value)
+                    else:
+                        value = poet.get(field, None)
+                        values.append(json.dumps(value, ensure_ascii=False))
+                sql = f"INSERT INTO `{table}` VALUES (null,{','.join(list(map(lambda v:'%s',values)))})"
+                cursor.execute(sql, values)
                 success += 1
         except Exception:
             console.error(traceback.format_exc())
@@ -141,3 +136,19 @@ def importAuthors(
         "time": f"{console.round(end - begin)}s",
     }
 
+
+# 特殊处理唐诗三百首
+def shisanbai(data: dict):
+    content = data["content"]
+    result = []
+    for group in content:
+        for poet in group["content"]:
+            if poet["subchapter"]:
+                poet["title"] = poet["subchapter"]
+            else:
+                poet["title"] = poet["chapter"]
+            del poet["chapter"]
+            del poet["subchapter"]
+            poet["tags"] = ["唐詩三百首", group["type"]]
+            result.append(poet)
+    return result
