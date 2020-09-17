@@ -5,6 +5,7 @@ from glob import glob
 from console import console
 from colorama import Fore
 from typing import Sequence
+import traceback
 
 # 将json文件录入mysql数据库
 def importData(
@@ -18,13 +19,14 @@ def importData(
 ):
     names = tuple(glob(f"{source}/{path}"))
     console.log()
-    begin = console.log(f"正在處理  {collection}", Fore.CYAN)
+    begin = console.info(f"正在處理  {collection}")
     cursor = connect.cursor()
-    count = 0
-    try:
-        for name in names:
-            os.path.basename(name)
-            console.log(f"正在處理文件  {os.path.basename(name)}")
+    success = 0
+    error = 0
+    for name in names:
+        filename = os.path.basename(name)
+        try:
+            console.log(f"正在處理文件  {filename}")
             name = os.path.normpath(name)
             file = open(name, "r", encoding="utf-8")
             data = json.loads(file.read())
@@ -71,22 +73,23 @@ def importData(
                         tags,
                     ),
                 )
-                count += 1
-                # break
-        connect.commit()
-        end = console.log(f"{collection}  處理完畢", Fore.GREEN, begin)
-    except Exception as e:
-        console.log(e)
-        end = console.log(f"{collection}  處理出错", Fore.RED, begin)
-        count = "失敗"
-    finally:
-        cursor.close()
-        console.log()
-        return {
-            "collection": collection,
-            "count": count,
-            "time": f"{console.round(end - begin)}s",
-        }
+                success += 1
+        except Exception:
+            console.error(traceback.format_exc())
+            end = console.error(f"{filename}  處理出错")
+            error += 1
+    connect.commit()
+    if error == 0:
+        end = console.success(f"{collection}  處理完畢", begin)
+    else:
+        end = console.warning(f"{collection}  處理完畢，共有{error}个错误", begin)
+    cursor.close()
+    console.log()
+    return {
+        "collection": collection,
+        "count": success,
+        "time": f"{console.round(end - begin)}s",
+    }
 
 
 # 录入作者
@@ -99,11 +102,13 @@ def importAuthors(
     console.log()
     begin = console.log("正在處理  作者", Fore.CYAN)
     cursor = connect.cursor()
-    count = 0
-    try:
-        for name in names:
-            name = os.path.normpath(name)
-            console.log(f"正在處理文件  {os.path.basename(name)}")
+    success = 0
+    error = 0
+    for name in names:
+        name = os.path.normpath(name)
+        filename = os.path.basename(name)
+        try:
+            console.log(f"正在處理文件  {filename}")
             file = open(name, "r", encoding="utf-8")
             data = json.loads(file.read())
             if type(data).__name__ != "list":
@@ -118,20 +123,21 @@ def importAuthors(
                         author.get("short_description") or "",
                     ),
                 )
-                count += 1
-                # break
-        connect.commit()
-        end = console.log("作者  處理完畢", Fore.GREEN, begin)
-    except Exception as e:
-        console.log(e)
-        end = console.log("作者  處理出错", Fore.RED, begin)
-        count = None
-    finally:
-        cursor.close()
-        console.log()
-        return {
-            "collection": "作者",
-            "count": count,
-            "time": f"{console.round(end - begin)}s",
-        }
+                success += 1
+        except Exception as e:
+            console.error(traceback.format_exc())
+            console.error(f"{filename}  處理出错")
+            error += 1
+    connect.commit()
+    if error == 0:
+        end = console.success("作者  處理完畢", begin)
+    else:
+        end = console.warning(f"作者  處理完畢，共有{error}个错误", begin)
+    cursor.close()
+    console.log()
+    return {
+        "collection": "作者",
+        "count": success,
+        "time": f"{console.round(end - begin)}s",
+    }
 
