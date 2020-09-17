@@ -21,10 +21,11 @@ def start():
 
     # 连接数据库
     connect = mysql.connector.connect(**config["mysql"])
+    cursor = connect.cursor()
+    cursor.execute("SET names 'utf8mb4'")
 
     # 删除旧表, 创建新表
     # 诗词表
-    cursor = connect.cursor()
     if len(table):
         cursor.execute(f"DROP TABLE IF EXISTS `{table}`")
         sql = f"""CREATE TABLE `{table}` (
