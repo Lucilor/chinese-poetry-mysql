@@ -49,6 +49,7 @@ def importData(
             data = json.loads(file.read())
             if filename == "tangshisanbaishou.json":
                 data = shisanbai(data)
+                dynasty = "唐"
             if type(data).__name__ != "list":
                 data = [data]
             for poet in data:
