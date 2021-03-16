@@ -54,8 +54,7 @@
 			{
 				"path": "lunyu/lunyu.json",
 				"dynasty": "戰國",
-				"collection": "論語",
-				"author": ""
+				"collection": "論語"
 			},
 			{
 				"path": "youmengying/youmengying.json",
@@ -67,8 +66,18 @@
 				"path": "mengxue/*.json",
 				"dynasty": "",
 				"collection": "蒙學",
-				"author": ""
-			}
+			},
+			{
+				"path": "caocaoshiji/*.json",
+				"dynasty": "三國",
+				"collection": "曹操詩集",
+				"author": "曹操"
+			},
+            {
+                "path": "chuci/*.json",
+                "dynasty": "戰國",
+                "collection": "楚辭"
+            }
 		],
 		"include": [],
 		"exclude": [],

@@ -6,6 +6,7 @@ from colorama import Fore
 
 
 def start():
+    console.logPath = "./log.txt"
     begin = console.log("開始處理文件", Fore.CYAN)
 
     # 获取各种参数
@@ -57,21 +58,23 @@ def start():
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"""
         cursor.execute(sql)
 
+    cursor.close()
+
     # 循环处理json文件
     arr = []
     maxLenCollection = 0
     maxLenTime = 0
     total = 0
     res = None
+    hasInclude = len(include) > 0
+    hasExclude = len(exclude) > 0
     if len(table):
-        for d in data:
-            if len(include) and d["collection"] not in include:
+        for info in data:
+            if hasInclude and info["collection"] not in include:
                 continue
-            if len(exclude) and d["collection"] in exclude:
+            if hasExclude and info["collection"] in exclude:
                 continue
-            res = importData(
-                connect, source, table, d["path"], d["dynasty"], d["collection"]
-            )
+            res = importData(connect, source, table, info)
             arr.append(res)
             maxLenCollection = max(maxLenCollection, console.strLen(res["collection"]))
             maxLenTime = max(maxLenTime, console.strLen(res["time"]))
@@ -84,6 +87,7 @@ def start():
         maxLenTime = max(maxLenTime, console.strLen(res["time"]))
         if isinstance(res["count"], int):
             total += res["count"]
+    connect.commit()
     connect.close()
 
     # 最后输出统计信息
@@ -98,4 +102,5 @@ def start():
     console.log()
 
 
-start()
+if __name__ == "__main__":
+    start()

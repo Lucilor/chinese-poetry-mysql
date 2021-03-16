@@ -2,13 +2,11 @@
 
 ## 运行环境
 
-python 3
-
-安装python 依赖: `pip install -r requirements.txt`
+python 3.8(pipenv)
 
 ## config.json 说明
 
-```jsonc
+``` jsonc
 "mysql": {
 	"host": "127.0.0.1",				// 服务器地址
 	"user": "root",					// 用户名
@@ -41,3 +39,9 @@ python 3
 > 2. 将 `config.json.sample` 另存为 `config.json` 并配置好相关参数
 
 > 3. 运行 `start.py`
+
+``` shell
+pipenv shell
+pipenv install
+python ./start.py
+```

@@ -6,7 +6,7 @@ from glob import glob
 from mysql.connector.cursor import MySQLCursor
 from console import console
 from colorama import Fore
-from typing import Sequence
+from typing import Dict, Iterable
 import traceback
 
 fields = {
@@ -25,15 +25,11 @@ fields = {
 }
 
 # 将json文件录入mysql数据库
-def importData(
-    connect: MySQLConnection,
-    source: str,
-    table: str,
-    path: str,
-    dynasty: str,
-    collection: str,
-    author: str = None,
-):
+def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
+    path = info["path"]
+    dynasty = info["dynasty"]
+    collection = info["collection"]
+    author = info.get("author")
     names = tuple(glob(f"{source}/{path}"))
     console.log()
     begin = console.info(f"正在處理  {collection}")
@@ -49,7 +45,6 @@ def importData(
             data = json.loads(file.read())
             if filename == "tangshisanbaishou.json":
                 data = shisanbai(data)
-                dynasty = "唐"
             if type(data).__name__ != "list":
                 data = [data]
             for poet in data:
@@ -61,20 +56,30 @@ def importData(
                             value = collection
                         elif field == "dynasty":
                             value = dynasty
-                        elif field == "author" and author:
-                            value = author
+                        elif field == "author":
+                            if author:
+                                value = author
+                            if not value:
+                                value = "不詳"
                         values.append(value)
                     else:
                         value = poet.get(field, None)
+                        if field == "tags":
+                            if type(value) != list:
+                                try:
+                                    value = list(value)
+                                except:
+                                    value = []
+                            if collection not in value:
+                                value.append(collection)
                         values.append(json.dumps(value, ensure_ascii=False))
-                sql = f"INSERT INTO `{table}` VALUES (null,{','.join(list(map(lambda v:'%s',values)))})"
+                sql = f"INSERT INTO `{table}` VALUES (null,{','.join(map(lambda _:'%s',values))})"
                 cursor.execute(sql, values)
                 success += 1
         except Exception:
             console.error(traceback.format_exc())
             end = console.error(f"{filename}  處理出错")
             error += 1
-    connect.commit()
     if error == 0:
         end = console.success(f"{collection}  處理完畢", begin)
     else:
@@ -90,7 +95,10 @@ def importData(
 
 # 录入作者
 def importAuthors(
-    connect: MySQLConnection, source: str, table: str, paths: Sequence[str],
+    connect: MySQLConnection,
+    source: str,
+    table: str,
+    paths: Iterable[str],
 ):
     names = ()
     for path in paths:
@@ -124,7 +132,6 @@ def importAuthors(
             console.error(traceback.format_exc())
             console.error(f"{filename}  處理出错")
             error += 1
-    connect.commit()
     if error == 0:
         end = console.success("作者  處理完畢", begin)
     else:
@@ -139,8 +146,9 @@ def importAuthors(
 
 
 # 特殊处理唐诗三百首
-def shisanbai(data: dict):
+def shisanbai(data: Dict):
     content = data["content"]
+    data["dynasty"] = "唐"
     result = []
     for group in content:
         for poet in group["content"]:

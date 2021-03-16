@@ -1,7 +1,11 @@
 import math
 import time
-from colorama import Fore
+from typing import Iterable
+from colorama import Fore, init
 import re
+from multiprocessing import Lock
+
+init()
 
 
 class Console:
@@ -12,12 +16,22 @@ class Console:
     def __init__(self, maxLength=64) -> None:
         self.maxLength = maxLength
 
-    def log(self, text: str = None, color=None, begin=False) -> float:
+    def log(self, text=None, color=None, begin=False, indent=0, prefix="", lock: Lock() = None) -> float:
         if self.disabled:
             return
+        if lock:
+            lock.acquire()
+            try:
+                return self.log(text, color, begin, indent, prefix)
+            finally:
+                lock.release()
+        if isinstance(text, Iterable) and type(text) != str:
+            return self.log("\n".join(text), color, begin, indent, prefix)
         maxLength = self.maxLength
         if text is None:
             text = "".ljust(maxLength, "-")
+        if type(text) != str:
+            raise Exception("text should be str or Iterable[str] or None")
         t = time.time()
         now = time.localtime(t)
         h = str(now.tm_hour).zfill(2)
@@ -38,15 +52,17 @@ class Console:
         timeStamp = f"[{h}:{m}:{s}]"
         timeStampLen = Console.strLen(timeStamp)
         for i in range(len(textList)):
-            ti = textList[i]
+            if not textList[i]:
+                continue
+            ti = prefix + " " * indent * i + textList[i]
             if i == 0:
                 ti = Console.coloredText(ti, color)
                 ti = f"{Console.coloredText(timeStamp, Fore.BLUE)} {ti}"
-            elif i == len(textList) - 1:
-                ti = Console.strAlign(ti, maxLength + timeStampLen + 1, "R")
-                ti = Console.coloredText(ti, color)
+            # elif i == len(textList) - 1:
+            #     ti = Console.strAlign(ti, maxLength + timeStampLen + 1, "R")
+            #     ti = Console.coloredText(ti, color)
             else:
-                ti = "".ljust(timeStampLen + 10) + ti
+                ti = "".ljust(timeStampLen + 1) + ti
                 ti = Console.coloredText(ti, color)
             print(ti)
             if self.logPath:
@@ -55,17 +71,17 @@ class Console:
         self.lastTimestamp = t
         return t
 
-    def success(self, text: str, begin=False):
-        return self.log("SUCCESS: " + text, Fore.GREEN, begin)
+    def success(self, text=None, begin=False, indent=0, lock=None):
+        return self.log(text, Fore.GREEN, begin, indent, "SUCCESS: ", lock)
 
-    def warning(self, text: str, begin=False):
-        return self.log("WARNING: " + text, Fore.YELLOW, begin)
+    def warning(self, text=None, begin=False, indent=0, lock=None):
+        return self.log(text, Fore.YELLOW, begin, indent, "WARNING: ", lock)
 
-    def error(self, text: str = None, begin=False):
-        return self.log("ERROR  : " + text, Fore.RED, begin)
+    def error(self, text=None, begin=False, indent=0, lock=None):
+        return self.log(text, Fore.RED, begin, indent, "ERROR  : ", lock)
 
-    def info(self, text: str = None, begin=False):
-        return self.log("INFO   : " + text, Fore.CYAN, begin)
+    def info(self, text=None, begin=False, indent=0, lock=None):
+        return self.log(text, Fore.CYAN, begin, indent, "INFO   : ", lock)
 
     @staticmethod
     def strLen(text: str):
