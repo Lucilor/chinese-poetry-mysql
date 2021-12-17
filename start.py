@@ -1,8 +1,10 @@
 import json
+
 import mysql.connector
-from db import importData, importAuthors
-from console import console
 from colorama import Fore
+
+from console import console
+from db import importAuthors, importData
 
 
 def start():

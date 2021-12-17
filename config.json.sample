@@ -1,86 +1,86 @@
 {
-	"mysql": {
-		"host": "127.0.0.1",
-		"user": "root",
-		"password": "123456",
-		"port": "3306",
-		"database": "test"
-	},
-	"table": "chinese_poetry",
-	"tableAuthor": "chinese_poetry_author",
-	"source": "/opt/chinese-poetry",
-	"files": {
-		"data": [
-			{
-				"path": "json/poet.tang.*.json",
-				"dynasty": "唐",
-				"collection": "唐詩"
-			},
-			{
-				"path": "json/poet.song.*.json",
-				"dynasty": "宋",
-				"collection": "宋詩"
-			},
-			{
-				"path": "ci/ci.song.*.json",
-				"dynasty": "宋",
-				"collection": "宋詞"
-			},
-			{
-				"path": "wudai/huajianji/huajianji-*-juan.json",
-				"dynasty": "唐",
-				"collection": "花間集"
-			},
-			{
-				"path": "wudai/nantang/poetrys.json",
-				"dynasty": "唐",
-				"collection": "南唐二主詞"
-			},
-			{
-				"path": "yuanqu/yuanqu.json",
-				"dynasty": "元",
-				"collection": "元曲"
-			},
-			{
-				"path": "shijing/shijing.json",
-				"dynasty": "",
-				"collection": "詩經"
-			},
-			{
-				"path": "sishuwujing/*.json",
-				"dynasty": "",
-				"collection": "四書五經"
-			},
-			{
-				"path": "lunyu/lunyu.json",
-				"dynasty": "戰國",
-				"collection": "論語"
-			},
-			{
-				"path": "youmengying/youmengying.json",
-				"dynasty": "清",
-				"collection": "幽夢影",
-				"author": "张潮"
-			},
-			{
-				"path": "mengxue/*.json",
-				"dynasty": "",
-				"collection": "蒙學",
-			},
-			{
-				"path": "caocaoshiji/*.json",
-				"dynasty": "三國",
-				"collection": "曹操詩集",
-				"author": "曹操"
-			},
+    "mysql": {
+        "host": "127.0.0.1",
+        "user": "root",
+        "password": "123456",
+        "port": "3306",
+        "database": "test"
+    },
+    "table": "chinese_poetry",
+    "tableAuthor": "chinese_poetry_author",
+    "source": "/opt/chinese-poetry",
+    "files": {
+        "data": [
+            {
+                "path": "json/poet.tang.*.json",
+                "dynasty": "唐",
+                "collection": "唐詩"
+            },
+            {
+                "path": "json/poet.song.*.json",
+                "dynasty": "宋",
+                "collection": "宋詩"
+            },
+            {
+                "path": "ci/ci.song.*.json",
+                "dynasty": "宋",
+                "collection": "宋詞"
+            },
+            {
+                "path": "wudai/huajianji/huajianji-*-juan.json",
+                "dynasty": "唐",
+                "collection": "花間集"
+            },
+            {
+                "path": "wudai/nantang/poetrys.json",
+                "dynasty": "唐",
+                "collection": "南唐二主詞"
+            },
+            {
+                "path": "yuanqu/yuanqu.json",
+                "dynasty": "元",
+                "collection": "元曲"
+            },
+            {
+                "path": "shijing/shijing.json",
+                "dynasty": "",
+                "collection": "詩經"
+            },
+            {
+                "path": "sishuwujing/*.json",
+                "dynasty": "",
+                "collection": "四書五經"
+            },
+            {
+                "path": "lunyu/lunyu.json",
+                "dynasty": "戰國",
+                "collection": "論語"
+            },
+            {
+                "path": "youmengying/youmengying.json",
+                "dynasty": "清",
+                "collection": "幽夢影",
+                "author": "张潮"
+            },
+            {
+                "path": "mengxue/*.json",
+                "dynasty": "",
+                "collection": "蒙學"
+            },
+            {
+                "path": "caocaoshiji/*.json",
+                "dynasty": "三國",
+                "collection": "曹操詩集",
+                "author": "曹操"
+            },
             {
                 "path": "chuci/*.json",
                 "dynasty": "戰國",
                 "collection": "楚辭"
             }
-		],
-		"include": [],
-		"exclude": [],
-		"authors": ["ci/author.song.json", "json/authors.*.json", "wudai/nantang/authors.json"]
-	}
+        ],
+        "include": [],
+        "exclude": [],
+        "authors": ["ci/author.song.json", "json/authors.*.json", "wudai/nantang/authors.json"]
+    }
 }

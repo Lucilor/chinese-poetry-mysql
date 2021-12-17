@@ -1,13 +1,14 @@
-import os
-from mysql.connector import MySQLConnection
 import json
-from glob import glob
-
-from mysql.connector.cursor import MySQLCursor
-from console import console
-from colorama import Fore
-from typing import Dict, Iterable
+import os
 import traceback
+from glob import glob
+from typing import Dict, Iterable, List
+
+from colorama import Fore
+from mysql.connector import MySQLConnection
+from mysql.connector.cursor import MySQLCursor
+
+from console import console
 
 fields = {
     "author": {"type": "string"},
@@ -45,7 +46,7 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
             data = json.loads(file.read())
             if filename == "tangshisanbaishou.json":
                 data = shisanbai(data)
-            if type(data).__name__ != "list":
+            if not isinstance(data, list):
                 data = [data]
             for poet in data:
                 values = []
@@ -65,9 +66,9 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
                     else:
                         value = poet.get(field, None)
                         if field == "tags":
-                            if type(value) != list:
+                            if not isinstance(value, list):
                                 try:
-                                    value = list(value)
+                                    value = [value]
                                 except:
                                     value = []
                             if collection not in value:
@@ -149,7 +150,7 @@ def importAuthors(
 def shisanbai(data: Dict):
     content = data["content"]
     data["dynasty"] = "唐"
-    result = []
+    result: List[dict] = []
     for group in content:
         for poet in group["content"]:
             if poet["subchapter"]:

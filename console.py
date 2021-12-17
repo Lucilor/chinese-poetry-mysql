@@ -1,9 +1,10 @@
+import json
 import math
-import time
-from typing import Iterable
-from colorama import Fore, init
 import re
-from multiprocessing import Lock
+import time
+from typing import Any, Union
+
+from colorama import Fore, init
 
 init()
 
@@ -11,28 +12,45 @@ init()
 class Console:
     lastTimestamp = -1
     disabled = False
-    logPath = None
+    logPath: Union[str, None] = None
+    indent = 4
 
     def __init__(self, maxLength=64) -> None:
         self.maxLength = maxLength
 
-    def log(self, text=None, color=None, begin=False, indent=0, prefix="", lock: Lock() = None) -> float:
+    def log(
+        self,
+        text: Any = None,
+        color: Union[str, None] = None,
+        begin: Union[float, None] = False,
+        indent: int = 0,
+        prefix: str = "",
+        lock: Any = None,
+    ):
+        t = time.time()
         if self.disabled:
-            return
+            return t
         if lock:
             lock.acquire()
             try:
                 return self.log(text, color, begin, indent, prefix)
             finally:
                 lock.release()
-        if isinstance(text, Iterable) and type(text) != str:
-            return self.log("\n".join(text), color, begin, indent, prefix)
+        typeText = type(text)
+        if typeText != str:
+            if isinstance(text, (tuple, list)):
+                return self.log("\n".join(text), color, begin, indent, prefix)
+            elif text is not None:
+                try:
+                    text = json.dumps(text, ensure_ascii=False)
+                except:
+                    text = str(text)
+                return self.log(text, color, begin, indent, prefix)
         maxLength = self.maxLength
         if text is None:
             text = "".ljust(maxLength, "-")
         if type(text) != str:
-            raise Exception("text should be str or Iterable[str] or None")
-        t = time.time()
+            raise Exception("text type error")
         now = time.localtime(t)
         h = str(now.tm_hour).zfill(2)
         m = str(now.tm_min).zfill(2)
@@ -51,6 +69,8 @@ class Console:
             textList[-1] += timeText
         timeStamp = f"[{h}:{m}:{s}]"
         timeStampLen = Console.strLen(timeStamp)
+        if indent == True:
+            indent = self.indent
         for i in range(len(textList)):
             if not textList[i]:
                 continue

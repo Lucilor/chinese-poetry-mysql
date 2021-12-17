@@ -1,0 +1,62 @@
+{
+    "files.associations": {"*.json.sample": "json"},
+    "json.schemas": [
+        {
+            "fileMatch": ["/config.json"],
+            "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["mysql", "table", "tableAuthor", "source", "files"],
+                "properties": {
+                    "mysql": {
+                        "type": "object",
+                        "description": "mysql config",
+                        "properties": {
+                            "host": {"type": "string", "description": "mysql host"},
+                            "user": {"type": "string", "description": "mysql user"},
+                            "password": {"type": "string", "description": "mysql password"},
+                            "port": {"type": "string", "description": "mysql port"},
+                            "database": {"type": "string", "description": "mysql database"}
+                        }
+                    },
+                    "table": {"type": "string", "description": "诗词表名 !!!注意, 若表名已存在会删除该表, 请注意备份!"},
+                    "tableAuthor": {"type": "string", "description": "作者表名 !!!注意, 若表名已存在会删除该表, 请注意备份!"},
+                    "source": {"type": "string", "description": "古诗词根目录"},
+                    "files": {
+                        "type": "object",
+                        "description": "录入数据的参数, 你可以根据需要修改或删除部分内容",
+                        "additionalProperties": false,
+                        "required": ["data", "authors"],
+                        "properties": {
+                            "data": {
+                                "type": "array",
+                                "description": "诗词文件",
+                                "items": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "required": ["path", "dynasty", "collection"],
+                                    "properties": {
+                                        "path": {
+                                            "oneOf": [{"type": "string"}, {"type": "array", "items": {"type": "string"}}],
+                                            "description": "指定匹配的文件(Unix 文件名模式匹配)"
+                                        },
+                                        "dynasty": {"type": "string", "description": "指定朝代"},
+                                        "collection": {"type": "string", "description": "指定集合"},
+                                        "author": {"type": "string", "description": "可选, 手动指定作者"}
+                                    }
+                                }
+                            },
+                            "include": {"type": "array", "description": "只处理特定的collection", "items": {"type": "string"}},
+                            "exclude": {
+                                "type": "array",
+                                "description": "不处理特定的collection, 若include不为空, 则此项无效",
+                                "items": {"type": "string"}
+                            },
+                            "authors": {"type": "array", "description": "匹配作者文件(Unix 文件名模式匹配)", "items": {"type": "string"}}
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
