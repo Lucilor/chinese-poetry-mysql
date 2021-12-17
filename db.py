@@ -2,7 +2,7 @@ import json
 import os
 import traceback
 from glob import glob
-from typing import Dict, Iterable, List
+from typing import Dict, List
 
 from colorama import Fore
 from mysql.connector import MySQLConnection
@@ -31,7 +31,12 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
     dynasty = info["dynasty"]
     collection = info["collection"]
     author = info.get("author")
-    names = tuple(glob(f"{source}/{path}"))
+    if isinstance(path, str):
+        names = list(glob(f"{source}/{path}"))
+    else:
+        names = []
+        for v in path:
+            names += list(glob(f"{source}/{v}"))
     console.log()
     begin = console.info(f"正在處理  {collection}")
     cursor: MySQLCursor = connect.cursor()
@@ -39,9 +44,9 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
     error = 0
     for name in names:
         filename = os.path.basename(name)
+        relName = os.path.relpath(name, source)
         try:
-            console.log(f"正在處理文件  {filename}")
-            name = os.path.normpath(name)
+            console.log(f"正在處理文件  {relName}")
             file = open(name, "r", encoding="utf-8")
             data = json.loads(file.read())
             if filename == "tangshisanbaishou.json":
@@ -73,13 +78,15 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
                                     value = []
                             if collection not in value:
                                 value.append(collection)
+                        # if field == "content" and value is not None:
+                        #     value = ""
                         values.append(json.dumps(value, ensure_ascii=False))
                 sql = f"INSERT INTO `{table}` VALUES (null,{','.join(map(lambda _:'%s',values))})"
                 cursor.execute(sql, values)
                 success += 1
         except Exception:
             console.error(traceback.format_exc())
-            end = console.error(f"{filename}  處理出错")
+            end = console.error(f"{relName}  處理出错")
             error += 1
     if error == 0:
         end = console.success(f"{collection}  處理完畢", begin)
@@ -99,7 +106,7 @@ def importAuthors(
     connect: MySQLConnection,
     source: str,
     table: str,
-    paths: Iterable[str],
+    paths: List[str],
 ):
     names = ()
     for path in paths:
@@ -112,8 +119,9 @@ def importAuthors(
     for name in names:
         name = os.path.normpath(name)
         filename = os.path.basename(name)
+        relName = os.path.relpath(name, source)
         try:
-            console.log(f"正在處理文件  {filename}")
+            console.log(f"正在處理文件  {relName}")
             file = open(name, "r", encoding="utf-8")
             data = json.loads(file.read())
             if type(data).__name__ != "list":
@@ -131,7 +139,7 @@ def importAuthors(
                 success += 1
         except Exception as e:
             console.error(traceback.format_exc())
-            console.error(f"{filename}  處理出错")
+            console.error(f"{relName}  處理出错")
             error += 1
     if error == 0:
         end = console.success("作者  處理完畢", begin)

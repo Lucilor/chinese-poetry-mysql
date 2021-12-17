@@ -42,11 +42,11 @@ def start():
 			`notes` text DEFAULT NULL,
 			`collection` text NOT NULL,
 			`section` text DEFAULT NULL,
-			`content` text DEFAULT NULL,
+			`content` longtext DEFAULT NULL,
 			`comment` text DEFAULT NULL,
 			`tags` text DEFAULT NULL,
 			PRIMARY KEY (`id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"""
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"""
         cursor.execute(sql)
     # 作者表
     if len(tableAuthor):
@@ -57,7 +57,7 @@ def start():
 			`description` text,
 			`short_description` text,
 			PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;"""
+			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"""
         cursor.execute(sql)
 
     cursor.close()
@@ -83,6 +83,8 @@ def start():
             if isinstance(res["count"], int):
                 total += res["count"]
     if len(tableAuthor):
+        if isinstance(authors, str):
+            authors = [authors]
         res = importAuthors(connect, source, tableAuthor, authors)
         arr.append(res)
         maxLenCollection = max(maxLenCollection, console.strLen(res["collection"]))

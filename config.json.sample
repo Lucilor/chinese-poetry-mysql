@@ -12,7 +12,7 @@
     "files": {
         "data": [
             {
-                "path": "json/poet.tang.*.json",
+                "path": ["json/poet.tang1.*.json", "quan_tang_shi/json/*.json"],
                 "dynasty": "唐",
                 "collection": "唐詩"
             },
@@ -22,7 +22,7 @@
                 "collection": "宋詩"
             },
             {
-                "path": "ci/ci.song.*.json",
+                "path": ["ci/ci.song.*.json", "ci/宋词三百首.json"],
                 "dynasty": "宋",
                 "collection": "宋詞"
             },
