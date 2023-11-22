@@ -1,9 +1,11 @@
 import json
+from typing import cast
 
 import mysql.connector
 from colorama import Fore
+from mysql.connector import MySQLConnection
 
-from console import console
+from console_py import console
 from db import importAuthors, importData
 
 
@@ -23,7 +25,7 @@ def start():
     authors = config["files"]["authors"]
 
     # 连接数据库
-    connect = mysql.connector.connect(**config["mysql"])
+    connect = cast(MySQLConnection, mysql.connector.connect(**config["mysql"]))
     cursor = connect.cursor()
     cursor.execute("SET names 'utf8mb4'")
 
@@ -32,32 +34,32 @@ def start():
     if len(table):
         cursor.execute(f"DROP TABLE IF EXISTS `{table}`")
         sql = f"""CREATE TABLE `{table}` (
-			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`author` text DEFAULT NULL,
-			`dynasty` text NOT NULL,
-			`title` text DEFAULT NULL,
-			`rhythmic` text DEFAULT NULL,
-			`chapter` text DEFAULT NULL,
-			`paragraphs` text NOT NULL,
-			`notes` text DEFAULT NULL,
-			`collection` text NOT NULL,
-			`section` text DEFAULT NULL,
-			`content` longtext DEFAULT NULL,
-			`comment` text DEFAULT NULL,
-			`tags` text DEFAULT NULL,
-			PRIMARY KEY (`id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"""
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `author` text DEFAULT NULL,
+            `dynasty` text NOT NULL,
+            `title` text DEFAULT NULL,
+            `rhythmic` text DEFAULT NULL,
+            `chapter` text DEFAULT NULL,
+            `paragraphs` text NOT NULL,
+            `notes` text DEFAULT NULL,
+            `collection` text NOT NULL,
+            `section` text DEFAULT NULL,
+            `content` longtext DEFAULT NULL,
+            `comment` text DEFAULT NULL,
+            `tags` text DEFAULT NULL,
+            PRIMARY KEY (`id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"""
         cursor.execute(sql)
     # 作者表
     if len(tableAuthor):
         cursor.execute(f"DROP TABLE IF EXISTS `{tableAuthor}`")
         sql = f"""CREATE TABLE `{tableAuthor}` (
-			`id` int(11) NOT NULL AUTO_INCREMENT,
-			`name` varchar(100) NOT NULL,
-			`description` text,
-			`short_description` text,
-			PRIMARY KEY (`id`)
-			) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"""
+            `id` int(11) NOT NULL AUTO_INCREMENT,
+            `name` varchar(100) NOT NULL,
+            `description` text,
+            `short_description` text,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;"""
         cursor.execute(sql)
 
     cursor.close()

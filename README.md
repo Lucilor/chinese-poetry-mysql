@@ -2,7 +2,7 @@
 
 ## 运行环境
 
-python 3.8(pipenv)
+python 3.11(pipenv)
 
 ## config.json 说明
 
@@ -41,6 +41,7 @@ python 3.8(pipenv)
 > 3. 运行 `start.py`
 
 ``` shell
+git submodule update --init --recursive
 pipenv shell
 pipenv install
 python ./start.py

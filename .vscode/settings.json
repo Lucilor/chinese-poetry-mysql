@@ -1,4 +1,5 @@
 {
+    "editor.formatOnSave": true,
     "files.associations": {"*.json.sample": "json"},
     "json.schemas": [
         {

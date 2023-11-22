@@ -2,13 +2,13 @@ import json
 import os
 import traceback
 from glob import glob
-from typing import Dict, List
+from typing import cast
 
 from colorama import Fore
 from mysql.connector import MySQLConnection
 from mysql.connector.cursor import MySQLCursor
 
-from console import console
+from console_py import console
 
 fields = {
     "author": {"type": "string"},
@@ -25,8 +25,9 @@ fields = {
     "tags": {"type": "json"},
 }
 
+
 # 将json文件录入mysql数据库
-def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
+def importData(connect: MySQLConnection, source: str, table: str, info: dict):
     path = info["path"]
     dynasty = info["dynasty"]
     collection = info["collection"]
@@ -39,7 +40,7 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
             names += list(glob(f"{source}/{v}"))
     console.log()
     begin = console.info(f"正在處理  {collection}")
-    cursor: MySQLCursor = connect.cursor()
+    cursor = cast(MySQLCursor, connect.cursor())
     success = 0
     error = 0
     for name in names:
@@ -74,7 +75,7 @@ def importData(connect: MySQLConnection, source: str, table: str, info: Dict):
                             if not isinstance(value, list):
                                 try:
                                     value = [value]
-                                except:
+                                except Exception:
                                     value = []
                             if collection not in value:
                                 value.append(collection)
@@ -106,7 +107,7 @@ def importAuthors(
     connect: MySQLConnection,
     source: str,
     table: str,
-    paths: List[str],
+    paths: list[str],
 ):
     names = ()
     for path in paths:
@@ -118,7 +119,6 @@ def importAuthors(
     error = 0
     for name in names:
         name = os.path.normpath(name)
-        filename = os.path.basename(name)
         relName = os.path.relpath(name, source)
         try:
             console.log(f"正在處理文件  {relName}")
@@ -137,7 +137,7 @@ def importAuthors(
                     ),
                 )
                 success += 1
-        except Exception as e:
+        except Exception:
             console.error(traceback.format_exc())
             console.error(f"{relName}  處理出错")
             error += 1
@@ -155,10 +155,10 @@ def importAuthors(
 
 
 # 特殊处理唐诗三百首
-def shisanbai(data: Dict):
+def shisanbai(data: dict):
     content = data["content"]
     data["dynasty"] = "唐"
-    result: List[dict] = []
+    result: list[dict] = []
     for group in content:
         for poet in group["content"]:
             if poet["subchapter"]:

@@ -1,0 +1,8 @@
+[tool.black]
+target-version = ['py311']
+line-length = 140
+
+[tool.isort]
+profile = "black"
+py_version = 311
+line_length = 140

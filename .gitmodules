@@ -1,0 +1,3 @@
+[submodule "console_py"]
+	path = console_py
+	url = https://github.com/Lucilor/console_py
