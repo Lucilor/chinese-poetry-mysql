@@ -8,7 +8,7 @@
     },
     "table": "chinese_poetry",
     "tableAuthor": "chinese_poetry_author",
-    "source": "/opt/chinese-poetry",
+    "source": "../chinese-poetry",
     "files": {
         "data": [
             {
@@ -68,7 +68,7 @@
                 "collection": "論語"
             },
             {
-                "path": "youmengying/youmengying.json",
+                "path": "幽梦影/*.json",
                 "dynasty": "清",
                 "collection": "幽夢影",
                 "author": "张潮"
@@ -98,6 +98,6 @@
         ],
         "include": [],
         "exclude": [],
-        "authors": ["ci/author.song.json", "json/authors.*.json", "wudai/nantang/authors.json"]
+        "authors": ["全唐诗/authors.song.json", "全唐诗/authors.tang.json", "宋词/author.song.json", "五代诗词/nantang/authors.json"]
     }
 }

@@ -1,6 +1,6 @@
 {
     "editor.formatOnSave": true,
-    "files.associations": {"*.json.sample": "json"},
+    "files.associations": {"*.json.sample": "jsonc"},
     "json.schemas": [
         {
             "fileMatch": ["/config.json"],
