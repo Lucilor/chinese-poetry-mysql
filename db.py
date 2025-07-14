@@ -73,12 +73,12 @@ def importData(connect: MySQLConnection, source: str, table: str, info: dict):
                         value = poet.get(field, None)
                         if field == "tags":
                             if not isinstance(value, list):
-                                try:
+                                if isinstance(value, str) and value:
                                     value = [value]
-                                except Exception:
+                                else:
                                     value = []
                             if collection not in value:
-                                value.append(collection)
+                                value.insert(0, collection)
                         # if field == "content" and value is not None:
                         #     value = ""
                         values.append(json.dumps(value, ensure_ascii=False))
